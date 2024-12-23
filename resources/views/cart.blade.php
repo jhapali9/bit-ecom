@@ -6,13 +6,17 @@
     <!-- Cart Start -->
     <div class="container-fluid pt-5">
         <div class="container">
-        
-             
+
+
 
     <section class="cart container mt-2 my-3 py-5">
         <div class="container mt-2">
             <h4>Your Cart</h4>
+            @foreach($errors->all() as $error)
+                <h3>{{ $error }}</h3>
+            @endforeach
         </div>
+
 
         <table class="pt-5">
             <tr>
@@ -22,18 +26,20 @@
             </tr>
 
 
-         
+            @if(Session::has('cart'))
+                @foreach(Session::get('cart') as $product)
                     <tr>
                         <td>
                             <div class="product-info">
-                                <img src="img/menu-1.jpg">
+                                <img src="{{ asset('img/'.$product['image']) }}">
                                 <div>
-                                    <p>Hot Coffee</p>
-                                    <small><span>$</span>199</small>
+                                    <p>{{ $product['name'] }}</p>
+                                    <small><span>Rs</span>{{ $product['price'] }}</small>
                                     <br>
-                                    <form > 
-                                      
-                                        <input type="submit" name="remove_btn" class="remove-btn" value="remove">
+                                    <form action="{{ route('remove_from_cart') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $product['id'] }}">
+                                        <input type="submit" class="remove-btn" value="remove">
                                     </form>
                                 </div>
                             </div>
@@ -47,40 +53,43 @@
                         </td>
 
                         <td>
-                            <span class="product-price">$199</span>
+                            <span class="product-price">Rs {{ $product['price'] }}</span>
                         </td>
                     </tr>
-           
+                @endforeach
+            @endif
 
         </table>
 
 
         <div class="cart-total">
             <table>
-      
+
                 <tr>
                     <td>Total</td>
-                    <td>$199</td>
+                    @if (Session::has('totalPrice'))
+                        <td>RS {{ Session::get('totalPrice') }}</td>
+                    @endif
                 </tr>
-           
+
             </table>
         </div>
-        
+
 
         <div class="checkout-container">
-       
+
             <form >
                 <input type="submit" class="btn checkout-btn" value="Checkout" name="">
             </form>
-          
-        
+
+
         </div>
 
 
 
 
 
-    </section>       
+    </section>
         </div>
     </div>
     <!-- Cart End -->

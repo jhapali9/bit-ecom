@@ -1,0 +1,46 @@
+composer require stripe/stripe-php
+
+
+https://dashboard.stripe.com/login
+https://dashboard.stripe.com/test/apikeys
+
+
+In .env file:
+STRIPE_KEY=pk_test_51QbDpCAVAFNqXciSk6sw1V9Y8J1hRAom1AE9MKwZaOYfVnAeuDFVJoVYH2P1s7f3EgR1EWh07DgJvKVwAvGCqGIY00RAW1rwRZ
+STRIPE_SECRET=sk_test_51QbDpCAVAFNqXciSbI8dWZnTpeD8EZyMqHtsxczPuMtuPs4hcEZecxpPMZzsl45TltbNnotgVSg6CMbOTQY2SWsA00Fji7hwee
+
+
+In web.php
+Route::get('/payment',[PaymentController::class,'payment'])->name('payment');
+Route::post('/pay',[PaymentController::class,'stripePost'])->name('stripePost');
+
+In PaymentController.php
+
+
+Test credentials:
+
+Name: Test
+
+Number: 4242 4242 4242 4242
+
+CSV: 123
+
+Expiration Month: 12
+
+Expiration Year: 2028
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

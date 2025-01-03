@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
@@ -36,9 +38,13 @@ class FrontEndController extends Controller
     {
         return view('checkout');
     }
+
+
     public function cart(Request $request)
     {
-        $this->calculateTotal($request);
+        if($request->session()->has('cart')){
+            $this->calculateTotal($request);
+        }
         return view('cart');
     }
 
@@ -122,6 +128,41 @@ class FrontEndController extends Controller
         unset($cart[$id_to_delete]);
         $request->session()->put('cart',$cart);
         return redirect()->back()->withErrors(['message'=>'Cart item deleted successfully.']);
+    }
+
+    public function place_order(Request $request){
+        // dd($request->all());
+
+        $order = new Order();
+        $order->name = $request->name;
+        $order->email = $request->email;
+        $order->city = $request->city;
+        $order->address = $request->address;
+        $order->phone = $request->phone;
+        $order->cost = $request->session()->get('totalPrice');
+        $order->status = "not paid";
+        $order->date = date("y-m-d");
+        $order->save();
+
+        $cart = $request->session()->get('cart');
+
+        foreach($cart as $c){
+            $orderitem = new OrderItem();
+            $orderitem->order_id = $order->id;
+            $orderitem->product_id = $c['id'];
+            $orderitem->product_name = $c['name'];
+            $orderitem->product_price = $c['price'];
+            $orderitem->product_image = $c['image'];
+            $orderitem->product_quantity = $c['quantity'];
+            $orderitem->order_date = date("y-m-d");
+            $orderitem->save();
+        }
+
+        // order id
+        $request->session()->put('order_id',$order->id);
+        
+        return view('payment');
+
     }
 
 
